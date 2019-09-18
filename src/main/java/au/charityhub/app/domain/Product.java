@@ -1,4 +1,4 @@
-package au.charityhub.domain;
+package au.charityhub.app.domain;
 
 import java.io.Serializable;
 
