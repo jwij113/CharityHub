@@ -27,7 +27,7 @@ public class User {
 	@Column(name="Dob")
     private Date dob;
 	
-	@Column(name="Email")
+	@Column(name="Email", unique=true)
     private String email;
 	
 	@Column(name="Password")
@@ -35,5 +35,8 @@ public class User {
 	
 	@Column(name="Profile_Pic", columnDefinition="mediumblob")
     private byte[] profilePic;
+	
+	@Column(name="SessionID", unique = true)
+	public String sessionID;
 
 }
