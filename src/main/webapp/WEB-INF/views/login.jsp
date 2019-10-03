@@ -1,11 +1,27 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
 
+<style>
+body {
+background-image: url("/app/resources/images/waterflow.svg");
+background-repeat: no-repeat;
+background-position: center;
+background-size: 100% 100%;
+}
+
+navbar{
+background:#b4d5fe;
+}
+
+</style>
+
 <body>
 
 <%@ include file="/WEB-INF/views/navbar.jsp" %>
 
 <br/>
 <br/>
+
+
 
 <% 	String w = request.getParameter("w"); 
 	String e = request.getParameter("e");
@@ -15,7 +31,7 @@
   <div class="row">
     <div class="col-sm">
     </div>
-    <div class="col-sm">
+    <div id="mid_login" class="col-sm">
     
     	<% 
     		if (w!=null && w.equals("1")){
