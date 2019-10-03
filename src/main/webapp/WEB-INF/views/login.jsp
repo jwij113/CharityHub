@@ -1,18 +1,6 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
 
-<style>
-body {
-background-image: url("/app/resources/images/waterflow.svg");
-background-repeat: no-repeat;
-background-position: center;
-background-size: 100% 100%;
-}
 
-navbar{
-background:#b4d5fe;
-}
-
-</style>
 
 <body>
 
