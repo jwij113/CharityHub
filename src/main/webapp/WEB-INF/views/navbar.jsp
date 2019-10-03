@@ -13,7 +13,7 @@
         <a class="nav-link" href="/app/register/charity">Register Charity</a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="#">Register User</a>
+        <a class="nav-link" href="/app/register/user">Register User</a>
       </li>
     </ul>
   </div>
