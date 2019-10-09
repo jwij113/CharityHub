@@ -24,6 +24,10 @@ public class Charity {
 	@Column(name="Id")
 	private long id;
 	
+	public long getId() {
+		return id;
+	}
+
 	@Column(name="Org_Name")
     private String orgName;
 	
@@ -102,6 +106,9 @@ public class Charity {
 	public void setPosts(List<Post> posts) {
 		this.posts = posts;
 	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "charity")
+    private List<Liked> likeds;
 	
 
 }

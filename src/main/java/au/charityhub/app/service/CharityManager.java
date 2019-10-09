@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.charityhub.app.domain.Charity;
+import au.charityhub.app.domain.Post;
 
 @Service(value="charityManager")
 @Transactional
@@ -69,6 +70,11 @@ public class CharityManager {
 		
 		Hibernate.initialize(c.getPosts());
 		
+		for (Post p: c.getPosts()) {
+			Hibernate.initialize(p.getLikes());
+			Hibernate.initialize(p.getComments());
+		}
+	
 		return c;
 	}
 }

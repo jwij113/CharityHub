@@ -6,6 +6,7 @@ import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -20,11 +21,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import au.charityhub.app.domain.Charity;
+import au.charityhub.app.domain.Liked;
 import au.charityhub.app.domain.Post;
 import au.charityhub.app.service.CharityManager;
 import au.charityhub.app.service.PostManager;
@@ -56,6 +59,7 @@ public class CharityController {
 		}
 		
 		Charity c = charityManager.getCharityBySessionIDLoadPost(cookiestr);
+		List<Post> lp =  c.getPosts();
 		
 		if (c == null)
 			return new ModelAndView(new RedirectView("../login?e=5"));
@@ -65,7 +69,18 @@ public class CharityController {
 		Map<String, Object> myModel = new HashMap<String, Object>();
 		myModel.put("encoded", encodeds);
 		myModel.put("charity", c);
-		//myModel.put("posts", c.getPosts());
+		myModel.put("posts", lp);
+		
+		Map<Long, Boolean> postsLiked  = new HashMap<Long, Boolean>();
+		for (Post p: lp) {
+			if (postManager.isLikeExist(p, c))
+				postsLiked.put(p.getId(), true);
+			else
+				postsLiked.put(p.getId(), false);
+		}
+		
+		myModel.put("postsLiked", postsLiked );
+			
 		String contentType = null;
 		
 		try {
@@ -186,6 +201,72 @@ public class CharityController {
 		return new ModelAndView(new RedirectView("../login?w=2"));
 	}
 	
+	
+	@RequestMapping(value="/post/like")
+	@ResponseBody
+	public String likePost (HttpServletRequest httpServletRequest) {
+		
+		Cookie[] cookies = httpServletRequest.getCookies();
+		String cookiestr = "";
+		if (cookies != null) {
+		 for (Cookie cookie : cookies) {
+		   if (cookie.getName().equals("session")) {
+			   cookiestr = cookie.getValue();
+		    }
+		  }
+		}
+		
+		Charity c = charityManager.getCharityBySessionID(cookiestr);
+		String pid = httpServletRequest.getParameter("id");
+		
+		Post p = postManager.getPostById(Long.parseLong(pid));
+		
+		if (postManager.isLikeExist(p, c)) {
+			postManager.destroyLike(p, c);
+			return "Unliked";
+		}else {
+			postManager.addLike(p, c);
+			return "Liked";
+		}
+		
+		
+		
+	}
+	
+	
+	@RequestMapping(value="/post/comment")
+	@ResponseBody
+	public String commentPost (HttpServletRequest httpServletRequest) {
+		
+		Cookie[] cookies = httpServletRequest.getCookies();
+		String cookiestr = "";
+		if (cookies != null) {
+		 for (Cookie cookie : cookies) {
+		   if (cookie.getName().equals("session")) {
+			   cookiestr = cookie.getValue();
+		    }
+		  }
+		}
+		
+		Charity c = charityManager.getCharityBySessionID(cookiestr);
+		String pid = httpServletRequest.getParameter("id");
+		String comment = httpServletRequest.getParameter("comment");
+		
+		Post p = postManager.getPostById(Long.parseLong(pid));
+		
+		try {
+			postManager.addComment(p, c, comment);
+		} catch (Exception e) {
+			return "false";
+		}
+		
+		return "true";
+		
+		
+	}
+	
+	
+		
 	
 
 }

@@ -1,12 +1,16 @@
 package au.charityhub.app.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,6 +24,10 @@ public class Post {
 	@Column(name="Id")
 	private long id;
 	
+	public long getId() {
+		return id;
+	}
+
 	@Column(name="Description")
     private String description;
 	
@@ -56,6 +64,21 @@ public class Post {
 
 	public void setCharity(Charity charity) {
 		this.charity = charity;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    private List<Liked> likes;
+
+	public List<Liked> getLikes() {
+		return likes;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+	@OrderBy("timestamp ASC")
+    private List<Comment> comments;
+
+	public List<Comment> getComments() {
+		return comments;
 	}
 
 }

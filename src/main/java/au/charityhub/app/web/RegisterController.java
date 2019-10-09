@@ -35,7 +35,6 @@ import org.springframework.web.servlet.ModelAndView;
 import au.charityhub.app.domain.Charity;
 import au.charityhub.app.domain.User;
 import au.charityhub.app.service.CharityManager;
-import au.charityhub.app.service.UserManager;
 
 
 @Controller
@@ -120,65 +119,5 @@ public class RegisterController {
 		return "Register success";
 	}
 	
-	@Resource(name = "userManager")	
-	private UserManager userManager;
-	
-	@RequestMapping(value = "/user")
-	public ModelAndView registerUserPage(HttpServletRequest httpServletRequest) {
-		Map<String, Object> myModel =  null;
-		
-		return new ModelAndView("userRegister", "model", myModel);
-	}
-	
-	@RequestMapping(value="/user", method=RequestMethod.POST)
-	@ResponseBody
-	public String registerUser (HttpServletRequest httpServletRequest, @RequestParam("profile_pic") MultipartFile file) {
-		String email = httpServletRequest.getParameter("email");
-		String password = httpServletRequest.getParameter("password");
-		
-		User user = new User();
-		
-		user.setEmail(email);
-		user.setPassword(password);
 
-	
-	if (email.length() == 0)
-		return "Email too short";
-		/*
-		 * else if (description.length() == 0) return "Description too short";
-		 */
-	else if (password.length() == 0)
-		return "Password too short";
-		/*
-		 * else if (orgName.length() == 0) return "Organisation name too short";
-		 */
-	else if (email.length() >= 255)
-		return "Email too long";
-		/*
-		 * else if (description.length() >= 255) return "Description too long";
-		 */
-	else if (password.length() >= 255)
-		return "Password too long";
-		/*
-		 * else if (orgName.length() >= 255) return "Organisation name too long";
-		 */
-	else if (charityManager.getCharityByEmail(email) != null)
-		return "Email already exist";
-	
-	try {
-		userManager.addUser(user);
-	}catch (Exception e) {
-		if (e.getCause() instanceof SQLException) {
-			SQLException se = (SQLException)e.getCause();
-			
-			logger.info(se.getMessage());
-			return "Error while processing form";
-		}
-		
-		logger.info(e.getCause().toString());
-		return "Error while processing form";
-	}
-	
-	return "Register success";
-}
 }
