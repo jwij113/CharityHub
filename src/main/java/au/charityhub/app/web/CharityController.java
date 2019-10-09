@@ -59,11 +59,13 @@ public class CharityController {
 		}
 		
 		Charity c = charityManager.getCharityBySessionIDLoadPost(cookiestr);
-		List<Post> lp =  c.getPosts();
+		
 		
 		if (c == null)
 			return new ModelAndView(new RedirectView("../login?e=5"));
-			
+		
+		List<Post> lp =  c.getPosts();
+		
 		byte[] encoded = Base64.getEncoder().encode(c.getProfilePic());
 		String encodeds = new String(encoded);
 		Map<String, Object> myModel = new HashMap<String, Object>();
