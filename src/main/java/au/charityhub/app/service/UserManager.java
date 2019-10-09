@@ -29,7 +29,16 @@ public class UserManager{
 		this.sessionFactory.getCurrentSession().merge(user);
 	}
 	
-	
+	public User getUserByEmail (String email) {
+		Session currentSession = this.sessionFactory.getCurrentSession();
+		Query q = currentSession.createQuery("From User u where u.email = :email");
+		q.setString("email", email);
+		
+		if (q.list().isEmpty())
+			return null;
+		
+		return (User) q.list().get(0);
+	}
 	
 }
 

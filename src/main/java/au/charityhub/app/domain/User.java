@@ -67,4 +67,12 @@ public class User {
 	@Column(name="SessionID", unique = true)
 	public String sessionID;
 
+	public String getSessionID() {
+		return sessionID;
+	}
+
+	public void setSessionID(String sessionID) {
+		this.sessionID = sessionID;
+	}
+
 }

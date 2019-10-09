@@ -31,10 +31,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import au.charityhub.app.domain.Charity;
 import au.charityhub.app.domain.User;
 import au.charityhub.app.service.CharityManager;
+import au.charityhub.app.service.UserManager;
 
 
 @Controller
@@ -119,5 +121,29 @@ public class RegisterController {
 		return "Register success";
 	}
 	
-
+	@Resource(name="userManager")
+	private UserManager userManager;
+	
+	@RequestMapping(value="/user")
+	public ModelAndView registerUserPage(HttpServletRequest httpServletRequest) {
+		
+		Map<String, Object> myModel =  null;
+		
+		return new ModelAndView("userRegister", "model", myModel);
+	}
+	@RequestMapping(value="/user", method=RequestMethod.POST)
+	/*TODO: add in profile pic here*/
+	public ModelAndView userRegister (HttpServletRequest httpServletRequest) {
+		String email = httpServletRequest.getParameter("email");
+		String password = httpServletRequest.getParameter("password");
+		
+		User u = new User();
+		
+		u.setEmail(email);
+		u.setPassword(password);
+		
+		userManager.addUser(u);
+		
+		return new ModelAndView(new RedirectView("../login"));
+	}
 }

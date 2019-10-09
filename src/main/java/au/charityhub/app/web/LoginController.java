@@ -20,7 +20,8 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import au.charityhub.app.domain.Charity;
 import au.charityhub.app.service.CharityManager;
-
+import au.charityhub.app.domain.User;
+import au.charityhub.app.service.UserManager;
 
 @Controller
 @RequestMapping(value="/login/**")
@@ -28,6 +29,8 @@ public class LoginController {
 	
 	@Resource(name="charityManager")
 	private CharityManager charityManager;
+	@Resource(name="userManager")
+	private UserManager userManager;
 	
 	@RequestMapping(value="/")
 	public String loginPage(HttpServletRequest httpServletRequest){
@@ -48,30 +51,40 @@ public class LoginController {
 	public ModelAndView login (HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse ) {
 		String email = httpServletRequest.getParameter("email");
 		String password = httpServletRequest.getParameter("password");
+		String sessionID = "";
 		
 		Charity c = charityManager.getCharityByEmail(email);
+		User u = userManager.getUserByEmail(email);
 		
 		if (email.length() == 0)
 			return new ModelAndView(new RedirectView("login?e=1"));
 		else if (password.length() == 0)
 			return new ModelAndView(new RedirectView("login?e=2"));
-		else if (c == null)
-			return new ModelAndView(new RedirectView("login?e=3"));
+		else if (c == null) {
+			if (u == null)
+				return new ModelAndView(new RedirectView("login?e=3"));
+			else if (!u.getPassword().equals(password))
+				return new ModelAndView(new RedirectView("login?e=4"));
+			else {
+				sessionID = randomAlphaNumeric(20);
+				u.setSessionID(sessionID);
+				userManager.updateUser(u);
+				Cookie cookie = new Cookie("session", sessionID);
+		        cookie.setPath("/");
+				httpServletResponse.addCookie(cookie);
+				return new ModelAndView(new RedirectView("user/home"));
+			}
+		}
 		else if (!c.getPassword().equals(password))
 			return new ModelAndView(new RedirectView("login?e=4"));
-		
-		
-		String sessionID = randomAlphaNumeric(20);
-		c.setSessionID(sessionID);
-		
-		charityManager.updateCharity(c);
-		
-		Cookie cookie = new Cookie("session", sessionID);
-        cookie.setPath("/");
-		httpServletResponse.addCookie(cookie);
-		
-		return new ModelAndView(new RedirectView("charity/home"));
-		
+		else{
+			sessionID = randomAlphaNumeric(20);
+			c.setSessionID(sessionID);
+			charityManager.updateCharity(c);
+			Cookie cookie = new Cookie("session", sessionID);
+	        cookie.setPath("/");
+			httpServletResponse.addCookie(cookie);
+			return new ModelAndView(new RedirectView("charity/home"));
+		}
 	}
-
 }
