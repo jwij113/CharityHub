@@ -11,6 +11,7 @@ import au.charityhub.app.domain.Charity;
 import au.charityhub.app.domain.Comment;
 import au.charityhub.app.domain.Liked;
 import au.charityhub.app.domain.Post;
+import au.charityhub.app.factory.Factory;
 
 @Service(value="postManager")
 @Transactional
@@ -62,14 +63,14 @@ private SessionFactory sessionFactory;
 	}
 	
 	public void addLike(Post p, Charity c) {
-		Liked l = new Liked();
+		Liked l = Factory.getDefaultLike();
 		l.setCharity(c);
 		l.setPost(p);
 		this.sessionFactory.getCurrentSession().save(l);
 	}
 	
 	public void addComment(Post p, Charity c, String comment) {
-		Comment co = new Comment();
+		Comment co = Factory.getDefaultComment();
 		co.setCharity(c);
 		co.setPost(p);
 		co.setComment(comment);

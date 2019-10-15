@@ -87,4 +87,11 @@ public class LoginController {
 			return new ModelAndView(new RedirectView("charity/home"));
 		}
 	}
+	
+	@RequestMapping(value="/test", method=RequestMethod.POST)
+	public String test(HttpServletRequest httpServletRequest) {
+		String email = httpServletRequest.getParameter("email");
+		Charity c = charityManager.getCharityByEmail(email);
+		return "login";
+	}
 }

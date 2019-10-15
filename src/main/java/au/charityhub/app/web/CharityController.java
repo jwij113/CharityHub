@@ -29,6 +29,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import au.charityhub.app.domain.Charity;
 import au.charityhub.app.domain.Liked;
 import au.charityhub.app.domain.Post;
+import au.charityhub.app.factory.Factory;
 import au.charityhub.app.service.CharityManager;
 import au.charityhub.app.service.PostManager;
 
@@ -143,7 +144,7 @@ public class CharityController {
 			
 		String description = httpServletRequest.getParameter("description");
 		
-		Post p = new Post();
+		Post p = Factory.getDefaultPost();
 		
 		p.setDescription(description);
 		
