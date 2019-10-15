@@ -1,5 +1,9 @@
 package au.charityhub.app.web;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +26,9 @@ import au.charityhub.app.domain.Charity;
 import au.charityhub.app.service.CharityManager;
 import au.charityhub.app.domain.User;
 import au.charityhub.app.service.UserManager;
+
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 @Controller
 @RequestMapping(value="/login/**")
@@ -89,9 +96,33 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="/test", method=RequestMethod.POST)
+	public String testPost(HttpServletRequest httpServletRequest) {
+		String email = httpServletRequest.getParameter("email");
+		Charity c = charityManager.getCharityByEmail(email);
+		return "login";
+	}
+	
+	@RequestMapping(value="/test", method=RequestMethod.GET)
 	public String test(HttpServletRequest httpServletRequest) {
 		String email = httpServletRequest.getParameter("email");
 		Charity c = charityManager.getCharityByEmail(email);
+		
+		try {
+			URI uri = new URI("http://localhost:8080/app/api/test");
+			JSONTokener tokener = new JSONTokener(uri.toURL().openStream());
+			JSONObject root = new JSONObject(tokener);
+			System.out.println(root.get("name"));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return "login";
 	}
 }
