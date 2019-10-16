@@ -40,5 +40,15 @@ public class UserManager{
 		return (User) q.list().get(0);
 	}
 	
+	public User getUserBySessionID (String sessionID) {
+		Session currentSession = this.sessionFactory.getCurrentSession();
+		Query q = currentSession.createQuery("From User u where u.sessionID = :sessionID");
+		q.setString("sessionID", sessionID);
+		
+		if (q.list().isEmpty())
+			return null;
+		
+		return (User) q.list().get(0);
+	}
 }
 
