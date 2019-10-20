@@ -132,18 +132,51 @@ public class RegisterController {
 		return new ModelAndView("userRegister", "model", myModel);
 	}
 	@RequestMapping(value="/user", method=RequestMethod.POST)
-	/*TODO: add in profile pic here*/
-	public ModelAndView userRegister (HttpServletRequest httpServletRequest) {
+	public ModelAndView userRegister (HttpServletRequest httpServletRequest,  @RequestParam("profile_pic") MultipartFile file) {
 		String email = httpServletRequest.getParameter("email");
 		String password = httpServletRequest.getParameter("password");
+		String firstName = httpServletRequest.getParameter("first");
+		String lastName = httpServletRequest.getParameter("last");
 		
 		User u = new User();
 		
 		u.setEmail(email);
 		u.setPassword(password);
+		u.setFirstName(firstName);
+		u.setLastName(lastName);
 		
-		userManager.addUser(u);
+		try {
+			u.setProfilePic(file.getBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		return new ModelAndView(new RedirectView("../login"));
+		if (email.length() == 0)
+			return new ModelAndView(new RedirectView("user?e=1"));
+		else if (firstName.length() == 0)
+			return new ModelAndView(new RedirectView("user?e=1"));
+		else if (password.length() == 0)
+			return new ModelAndView(new RedirectView("user?e=1"));
+		else if (lastName.length() == 0)
+			return new ModelAndView(new RedirectView("user?e=1"));
+		else if (email.length() >= 255)
+			return new ModelAndView(new RedirectView("user?e=1"));
+		else if (firstName.length() >= 255)
+			return new ModelAndView(new RedirectView("user?e=1"));
+		else if (password.length() >= 255)
+			return new ModelAndView(new RedirectView("user?e=1"));
+		else if (lastName.length() >= 255)
+			return new ModelAndView(new RedirectView("user?e=1"));
+		else if (userManager.getUserByEmail(email) != null)
+			return new ModelAndView(new RedirectView("user?e=1"));
+		
+		try {
+			userManager.addUser(u);
+		}catch (Exception e) {
+			return new ModelAndView(new RedirectView("user?e=1"));
+		}
+		
+		return new ModelAndView(new RedirectView("../login?w=1"));
 	}
 }

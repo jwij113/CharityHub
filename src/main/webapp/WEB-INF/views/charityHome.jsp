@@ -8,8 +8,10 @@
 <br/>
 
 <%@ page import="au.charityhub.app.domain.Charity" %>
+<%@ page import="au.charityhub.app.domain.User" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="java.util.Set" %>
 <%@ page import="au.charityhub.app.domain.Post" %>
 <%@ page import="au.charityhub.app.domain.Liked" %>
 <%@ page import="au.charityhub.app.domain.Comment" %>
@@ -19,6 +21,7 @@
 Charity c = (Charity) ((Map<String, Object>) request.getAttribute("model")).get("charity");
 Map<Long, Boolean> postsLiked = (Map<Long, Boolean>)  ((Map<String, Object>) request.getAttribute("model")).get("postsLiked");
 List<Post> posts = c.getPosts();
+Set<User> su = (Set<User>) ((Map<String, Object>) request.getAttribute("model")).get("users");
 
 %>
 <script>
@@ -69,6 +72,10 @@ List<Post> posts = c.getPosts();
 		    }
 		    
 		});
+		
+		$("#showModal").click(function(){
+			$('#exampleModal').modal('show');
+		});
 	});
 </script>
 
@@ -80,7 +87,7 @@ List<Post> posts = c.getPosts();
     <br/>
     <c:out value="${model.charity.orgName}" />
     <br/>
-    0 follower
+    <% out.println(su.size());%> follower
     <br/>
     </div>
     
@@ -128,7 +135,10 @@ List<Post> posts = c.getPosts();
 	    				for (Comment co : p.getComments()){
 		    				out.println("<tr>");
 		    				out.println("<td>");
-		    					out.println(co.getCharity().getOrgName() + " : " + co.getComment());
+			    				if (co.getCharity() != null)
+			    					out.println(co.getCharity().getOrgName() + " : " + co.getComment());
+			    				else
+			    					out.println(co.getUser().getFirstName() + " : " + co.getComment());	
 		    				out.println("</td>");
 		    				out.println("</tr>");
 	    				}
@@ -165,7 +175,48 @@ List<Post> posts = c.getPosts();
     </div>
     
     <div class="col-3" style="text-align:center">
-    Followed by: <br/> none
+    Followed by: <br/> 
+    
+    <% 
+    	int count = 0;
+    	for (User u: su){
+    		out.println(u.getFirstName() + " " + u.getLastName());
+    		out.println("<br/>");
+    		if(count ==2)
+    			break;
+    		count++;
+    	}
+    %>
+    <a href="###" id="showModal" >View More +</a>
+    
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Followers</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      
+      <% 
+
+    	for (User u: su){
+    		out.println(u.getFirstName() + " " + u.getLastName());
+    		out.println("<br/>");
+    	}
+   	  %>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>

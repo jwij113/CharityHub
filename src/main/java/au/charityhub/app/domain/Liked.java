@@ -38,6 +38,8 @@ public class Liked {
 
 	@ManyToOne
     private Charity charity;
+	
+	
 
 	public Charity getCharity() {
 		return charity;
@@ -45,6 +47,17 @@ public class Liked {
 
 	public void setCharity(Charity charity) {
 		this.charity = charity;
+	}
+	
+	@ManyToOne
+    private User user;
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

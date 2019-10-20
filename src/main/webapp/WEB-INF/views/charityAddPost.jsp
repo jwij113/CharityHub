@@ -38,10 +38,12 @@
     </div>
     
     <div class="col-3" style="text-align:center">
-    Followed by: <br/> none
     </div>
   </div>
 </div>
+
+
+
 
 </body>
 

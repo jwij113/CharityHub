@@ -1,5 +1,7 @@
 package au.charityhub.app.service;
 
+import java.util.List;
+
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -76,5 +78,35 @@ public class CharityManager {
 		}
 	
 		return c;
+	}
+	
+	public Charity getCharityBySessionIDLoadUser (String sessionID) {
+		Session currentSession = this.sessionFactory.getCurrentSession();
+		Query q = currentSession.createQuery("From Charity c where c.sessionID = :sessionID");
+		q.setString("sessionID", sessionID);
+		
+		if (q.list().isEmpty())
+			return null;
+		
+		Charity c = (Charity) q.list().get(0);
+		
+		Hibernate.initialize(c.getUsers());
+	
+		return c;
+	}
+	
+	public List<Charity> getListOfCharities () {
+		Session currentSession = this.sessionFactory.getCurrentSession();
+		Query q = currentSession.createQuery("From Charity c");
+		
+			
+		return (List<Charity>)q.list();
+	}
+	
+	public List<Charity> getListOfCharitiesLike (String txt) {
+		Session currentSession = this.sessionFactory.getCurrentSession();
+		Query q = currentSession.createQuery("From Charity c where c.orgName like ?");
+		q.setString(0, "%"+txt+"%");
+		return (List<Charity>)q.list();
 	}
 }

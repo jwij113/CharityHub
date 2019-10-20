@@ -1,5 +1,6 @@
 package au.charityhub.app.domain;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -109,6 +111,36 @@ public class Charity {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "charity")
     private List<Liked> likeds;
+	
+	@ManyToMany(mappedBy = "charities")
+	private Set<User> users = new HashSet<User>();
+
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
+	}
+	
+	 @Override
+     public boolean equals(Object o) {
+		 
+         if (this == o) {
+             return true;
+         }
+         if (o == null || getClass() != o.getClass()) {
+        	 
+             return false;
+         }
+         Charity c = (Charity) o;
+         return c.id == this.id;
+     }
+	 
+	 @Override
+	 public int hashCode(){
+			return (int) this.id;
+	 }
 	
 
 }

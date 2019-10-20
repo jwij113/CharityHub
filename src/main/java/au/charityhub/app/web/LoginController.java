@@ -36,8 +36,25 @@ public class LoginController {
 	
 	@Resource(name="charityManager")
 	private CharityManager charityManager;
+	
+	public CharityManager getCharityManager() {
+		return charityManager;
+	}
+
+	public void setCharityManager(CharityManager charityManager) {
+		this.charityManager = charityManager;
+	}
+
 	@Resource(name="userManager")
 	private UserManager userManager;
+	
+	public UserManager getUserManager() {
+		return userManager;
+	}
+
+	public void setUserManager(UserManager userManager) {
+		this.userManager = userManager;
+	}
 	
 	@RequestMapping(value="/")
 	public String loginPage(HttpServletRequest httpServletRequest){

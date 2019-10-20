@@ -4,6 +4,7 @@ import au.charityhub.app.domain.Charity;
 import au.charityhub.app.domain.Comment;
 import au.charityhub.app.domain.Liked;
 import au.charityhub.app.domain.Post;
+import au.charityhub.app.domain.User;
 
 public class Factory {
 	
@@ -15,6 +16,11 @@ public class Factory {
 	public static Charity getDefaultCharity() {
 		Charity c = new Charity();
 		return c;
+	}
+	
+	public static User getDefaultUser() {
+		User u = new User();
+		return u;
 	}
 	
 	public static Liked getDefaultLike() {

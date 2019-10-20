@@ -11,6 +11,7 @@ import au.charityhub.app.domain.Charity;
 import au.charityhub.app.domain.Comment;
 import au.charityhub.app.domain.Liked;
 import au.charityhub.app.domain.Post;
+import au.charityhub.app.domain.User;
 import au.charityhub.app.factory.Factory;
 
 @Service(value="postManager")
@@ -69,9 +70,51 @@ private SessionFactory sessionFactory;
 		this.sessionFactory.getCurrentSession().save(l);
 	}
 	
+	public boolean isLikeExist(Post p, User u) {
+		Session currentSession = this.sessionFactory.getCurrentSession();
+		Query q = currentSession.createQuery("From Liked l where l.user.id = :uid and l.post.id = :pid");
+		q.setLong("uid", u.getId());
+		q.setLong("pid", p.getId());
+		
+		if (q.list().isEmpty())
+			return false;
+		else
+			return true;
+	}
+	
+	public void destroyLike(Post p, User u) {
+		Session currentSession = this.sessionFactory.getCurrentSession();
+		Query q = currentSession.createQuery("From Liked l where l.user.id = :uid and l.post.id = :pid");
+		q.setLong("uid", u.getId());
+		q.setLong("pid", p.getId());
+		
+		if (q.list().isEmpty())
+			return;
+		else {
+			Liked l = (Liked) q.list().get(0);
+			currentSession.delete(l);
+		}
+			
+	}
+	
+	public void addLike(Post p, User u) {
+		Liked l = Factory.getDefaultLike();
+		l.setUser(u);
+		l.setPost(p);
+		this.sessionFactory.getCurrentSession().save(l);
+	}
+	
 	public void addComment(Post p, Charity c, String comment) {
 		Comment co = Factory.getDefaultComment();
 		co.setCharity(c);
+		co.setPost(p);
+		co.setComment(comment);
+		this.sessionFactory.getCurrentSession().save(co);
+	}
+	
+	public void addComment(Post p, User u, String comment) {
+		Comment co = Factory.getDefaultComment();
+		co.setUser(u);
 		co.setPost(p);
 		co.setComment(comment);
 		this.sessionFactory.getCurrentSession().save(co);

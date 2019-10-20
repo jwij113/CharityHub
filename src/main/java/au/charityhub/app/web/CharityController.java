@@ -2,12 +2,17 @@ package au.charityhub.app.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -15,6 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Hibernate;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -29,6 +37,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import au.charityhub.app.domain.Charity;
 import au.charityhub.app.domain.Liked;
 import au.charityhub.app.domain.Post;
+import au.charityhub.app.domain.User;
 import au.charityhub.app.factory.Factory;
 import au.charityhub.app.service.CharityManager;
 import au.charityhub.app.service.PostManager;
@@ -70,9 +79,34 @@ public class CharityController {
 		byte[] encoded = Base64.getEncoder().encode(c.getProfilePic());
 		String encodeds = new String(encoded);
 		Map<String, Object> myModel = new HashMap<String, Object>();
+		
+		Set<User> su = new HashSet<User>();
+		
+		try {
+			URI uri = new URI("http://localhost:8080/app/api/getUserList?sessionID="+cookiestr);
+			JSONTokener tokener = new JSONTokener(uri.toURL().openStream());
+			JSONArray root = new JSONArray(tokener);
+			
+			for (Object o: root) {
+				System.out.println(o);
+				JSONTokener tokenerObject = new JSONTokener(o.toString());
+				JSONObject userJSON = new JSONObject (tokenerObject);
+				User u = Factory.getDefaultUser();
+				u.setId(userJSON.getLong("id"));
+				u.setLastName(userJSON.optString("last_name"));
+				u.setFirstName(userJSON.optString("first_name"));
+				su.add(u);
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		myModel.put("encoded", encodeds);
 		myModel.put("charity", c);
 		myModel.put("posts", lp);
+		myModel.put("users", su);
 		
 		Map<Long, Boolean> postsLiked  = new HashMap<Long, Boolean>();
 		for (Post p: lp) {
