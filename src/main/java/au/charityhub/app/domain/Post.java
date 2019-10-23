@@ -73,6 +73,10 @@ public class Post {
 		return likes;
 	}
 	
+	public void setLikes(List<Liked> likes) {
+		this.likes = likes;
+	}
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
 	@OrderBy("timestamp ASC")
     private List<Comment> comments;
@@ -80,5 +84,10 @@ public class Post {
 	public List<Comment> getComments() {
 		return comments;
 	}
+	
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
 
 }
