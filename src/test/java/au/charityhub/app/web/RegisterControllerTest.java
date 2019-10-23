@@ -78,23 +78,4 @@ public class RegisterControllerTest  {
 		}	           
     }
 	
-	@Test 
-	public void testRegisterCharity() {
-		 try {
-			this.mockMvc.perform(post("/register/charity").param("email", "joko_w_1@hotmail.com").param("password", "joko").param("orgName", "Test organisation").param("desc","test")).andExpect(status().isMovedTemporarily());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Test 
-	public void testRegisterUser() {
-		 try {
-			this.mockMvc.perform(post("/register/user").param("email", "joko_w_1@hotmail.com").param("password", "joko").param("orgName", "Test organisation").param("desc","test")).andExpect(status().isMovedTemporarily());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 }
