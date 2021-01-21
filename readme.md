@@ -1,0 +1,1 @@
+java spring project that imitate facebook for charity purposes
